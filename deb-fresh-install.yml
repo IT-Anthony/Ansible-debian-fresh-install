@@ -31,5 +31,4 @@
         mode: 0440
         create: yes
         validate: 'visudo -cf %s'
-
 ---
