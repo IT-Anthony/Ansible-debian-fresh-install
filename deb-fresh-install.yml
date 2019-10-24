@@ -1,0 +1,35 @@
+# deb-fresh-install
+# Maiiren Anthony - Notamax
+# Mis à jour le 24-10-2019
+---
+- hosts: srv-web
+  remote_user: root
+  tasks:
+    - name: I) Installation paquets de base
+      apt:
+        name: ['zip', 'htop', 'neofetch', 'net-tools', 'iptables', 'fail2ban', 'sudo']
+    - name: II) Configuration du motd
+      shell: echo Propriété de Notamax, serveur debian fraîchement installé > /etc/motd
+    - name: III) Configuration du pare-feu Iptables
+      get_url:
+        url: https://notamax.be/scripts/pare-feu.sh
+        dest: /etc/init.d/
+        mode: 0755
+    - name: IV) Configuration jail SSH Fail2Ban
+      get_url:
+        url: https://notamax.be/scripts/jail-sshd.conf
+        dest: /etc/fail2ban/jail.d/
+        mode: 0755
+    - name: V) Configuration jail SSH Fail2Ban - Suite
+      shell: mv /etc/fail2ban/jails.d/defaults-debian.conf defaults-debian.conf.save && mv jail-sshd.conf defaults-debian.conf
+      shell: systemctl enable fail2ban && systemctl reload fail2ban
+    - name: VI) Ajout de l'utilisateur "it-anthony" au groupe des sudoers
+      lineinfile:
+        path: /etc/sudoers.d/it-anthony
+        line: 'it-anthony ALL=(ALL) NOPASSWD: ALL'
+        state: present
+        mode: 0440
+        create: yes
+        validate: 'visudo -cf %s'
+
+---
