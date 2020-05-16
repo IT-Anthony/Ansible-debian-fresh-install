@@ -1,5 +1,5 @@
 # deb-fresh-install
-# Maiiren Anthony - Notamax
+# Mairien Anthony - Notamax
 # Mis à jour le 24-10-2019
 ---
 - hosts: srv-web
